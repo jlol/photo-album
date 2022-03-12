@@ -2,10 +2,11 @@ import random
 from typing import Tuple
 from random import randint
 from anytree import Node
-from rect import Rect
-from node_data import SplitType, NodeData
-from layout import Layout
-from image_provider import ImageProvider
+
+from src.layout_creation.image_provider import ImageProvider
+from src.layout_creation.layout import Layout
+from src.layout_creation.node_data import SplitType, NodeData
+from src.layout_creation.rect import Rect
 
 
 class LayoutCreator:

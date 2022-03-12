@@ -1,3 +1,10 @@
+
+class Point:
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+
 class Rect:
 
     def __init__(self, x: int, y: int, w: int, h: int):
@@ -12,3 +19,11 @@ class Rect:
 
     def get_ratio(self) -> float:
         return self.w / self.h
+
+    def get_corners(self):
+        return [
+           Point(self.x, self.y + self.h),
+           Point(self.x, self.y),
+           Point(self.x + self.w, self.y),
+           Point(self.x + self.w, self.y + self.h)
+        ]

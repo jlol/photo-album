@@ -1,6 +1,7 @@
 from anytree import Node, RenderTree, AsciiStyle, search
-from rect import Rect
-from node_data import NodeData
+
+from src.layout_creation.node_data import NodeData
+from src.layout_creation.rect import Rect
 
 
 class Layout:

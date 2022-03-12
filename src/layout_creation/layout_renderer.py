@@ -1,9 +1,10 @@
 from typing import Tuple
 import PIL
 from PIL import Image
-from rect import Rect
-from layout import Layout
-from node_data import NodeData
+
+from src.layout_creation.layout import Layout
+from src.layout_creation.node_data import NodeData
+from src.layout_creation.rect import Rect
 
 
 class LayoutRenderer:

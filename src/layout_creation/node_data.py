@@ -1,6 +1,6 @@
 from enum import Enum
-from rect import Rect
-from typing import Final
+
+from src.layout_creation.rect import Rect
 
 
 class SplitType(Enum):
