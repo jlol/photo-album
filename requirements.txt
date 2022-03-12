@@ -1,3 +1,6 @@
 anytree
 jsonpickle
 pillow
+PyQt5
+PyOpenGL
+numpy
