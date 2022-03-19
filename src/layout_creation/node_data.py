@@ -42,3 +42,39 @@ class NodeData:
 
     def get_mask(self) -> int:
         return self.__neighbours_mask
+
+    def get_rect_after_borders_applied(self, border: float) -> Rect:
+        rect = Rect(self.rect.x, self.rect.y, self.rect.w, self.rect.h)
+
+        if border == 0.0:
+            return rect
+
+        if self.has_neighbour(NodeData.LEFT_NEIGHBOUR):
+
+            if self.has_neighbour(NodeData.RIGHT_NEIGHBOUR):
+                rect.w -= border
+            else:
+                rect.w -= border
+        else:
+            rect.x += border
+
+            if self.has_neighbour(NodeData.RIGHT_NEIGHBOUR):
+                rect.w -= 2.0 * border
+            else:
+                rect.w -= 2.0 * border
+
+        if self.has_neighbour(NodeData.TOP_NEIGHBOUR):
+
+            if self.has_neighbour(NodeData.BOTTOM_NEIGHBOUR):
+                rect.h -= border
+            else:
+                rect.h -= border
+        else:
+            rect.y += border
+
+            if self.has_neighbour(NodeData.BOTTOM_NEIGHBOUR):
+                rect.h -= 2.0 * border
+            else:
+                rect.h -= 2.0 * border
+
+        return rect

@@ -8,8 +8,9 @@ class Vector2:
 
 
 class Photo:
-    def __init__(self, rect: Rect, path: str, offset=Vector2(0.0, 0.0)):
+    def __init__(self, rect: Rect, rect_minus_borders: Rect, path: str, offset=Vector2(0.0, 0.0)):
         self.rect = rect
+        self.rect_minus_borders = rect_minus_borders
         self.path = path
         self.offset = offset
 
@@ -24,10 +25,28 @@ class Page:
     def add_photo(self, photo: Photo):
         self.photos.append(photo)
 
+    def remove_photo(self, index: int):
+        self.photos.pop(index)
+
+    def clear_photos(self):
+        self.photos.clear()
+
 
 class Album:
     def __init__(self):
-        self.pages = []
+        self._pages = []
 
     def add_page(self, page: Page):
-        self.pages.append(page)
+        self._pages.append(page)
+
+    def get_page(self, index: int):
+        return self._pages[index]
+
+    def replace_page(self, index: int, page: Page):
+        self._pages[index] = page
+
+    def remove_page(self, index: int):
+        self._pages.pop(index)
+
+    def number_of_pages(self):
+        return len(self._pages)

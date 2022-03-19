@@ -13,23 +13,26 @@ class ImageProvider:
     def __init__(self):
         self.__img_dict = {}
 
-    def add_image(self, image_path):
+    def add_image(self, image_path) -> bool:
+        if image_path in self.__img_dict:
+            return True
+
         image = Image.open(image_path)
 
         if image is None:
-            print("Error reading image " + image_path)
-            return
-
-        if image_path in self.__img_dict:
-            print("Image was already added")
-            return
+            print("[ImageProvider] Error reading image " + image_path)
+            return False
 
         self.__img_dict[image_path] = image
+        return True
 
     def get_image(self, image_path):
         if image_path not in self.__img_dict:
-            print("Trying to retrieve non-existing image")
-            return Image.new(mode="RGB", size=(4, 4))
+            print("[ImageProvider] Trying to open non-added image")
+
+            if not self.add_image(image_path):
+                print("[ImageProvider] Wrong image path")
+                return Image.new(mode="RGB", size=(4, 4))
 
         return self.__img_dict[image_path]
 

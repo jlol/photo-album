@@ -24,7 +24,11 @@ def layout_to_page(layout: Layout) -> Page:
 
     for leaf in leaves:
         data = leaf.data
-        photo = Photo(data.rect, data.image)
+        photo = Photo(
+            data.rect,
+            data.get_rect_after_borders_applied(layout.border),
+            data.image
+        )
         page.add_photo(photo)
 
     return page

@@ -1,87 +1,51 @@
 import sys
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-import OpenGL.GL as gl
 
-from src.layout_creation.rect import Rect
-from src.opengl.camera import Camera
-from src.opengl.image_scene_object import ImageSceneObject
+from src.layout_creation.image_provider import ImageProvider
+from src.logic.project_handler import ProjectHandler
+from src.ui.central_widget import CentralWidget
 
 
-class AlbumVisualizer(QOpenGLWidget):
-    def __init__(self):
-        super().__init__()
-        self.is_mouse_down = False
-        self.last_mouse_pos = QPoint()
-        bg_color = (0.5, 0.8, 0.7, 1.0)
-        self.camera = Camera(bg_color)
-        self.photos = []
+class MainWindow(QMainWindow):
 
-    def initializeGL(self):
-        self.camera.initializeGL(self.size())
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
 
-    def set_zoom(self, zoom):
-        self.zoom = zoom
+        menuBar = self.menuBar()
+        fileMenu = QMenu("File", self)
 
-    def resizeGL(self, w, h):
-        self.camera.resizeGL(QSize(w, h))
+        save_action = QAction("Save", self)
+        #save_action.setStatusTip("Select a file to use as a database")
+        save_action.triggered.connect(self.__show_save_window)
+        fileMenu.addAction(save_action)
 
-    def add_photo(self, rect: Rect, path):
-        self.makeCurrent()
-        photo = ImageSceneObject(rect, path)
-        self.photos.append(photo)
+        load_action = QAction("Load", self)
+        load_action.triggered.connect(self.__show_load_window)
+        fileMenu.addAction(load_action)
 
-    def paintGL(self):
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        quit_action = QAction("Exit", self)
+        quit_action.triggered.connect(self.close)
+        fileMenu.addAction(quit_action)
 
-        gl.glPushMatrix()
-        self.camera.paintGL()
+        menuBar.addMenu(fileMenu)
 
-        gl.glPushMatrix()    # push the current matrix to the current stack
+        image_provider = ImageProvider()
+        self._project_handler = ProjectHandler(image_provider)
+        cw = CentralWidget(image_provider, self._project_handler)
+        self.setCentralWidget(cw)
 
-        for photo in self.photos:
-            photo.draw()
+    def __show_save_window(self):
+        print("Show save window")
 
-        gl.glPopMatrix()    # restore the previous modelview matrix
-        gl.glPopMatrix()
-
-        gl.glFlush()
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Q:
-            self.window.close()
-        elif event.key() == Qt.Key_A and len(self.photos) == 0:
-            test_img = "/home/woody/perfil.png"
-            self.add_photo(Rect(0, 0, 2000, 1000), test_img)
-
-    def wheelEvent(self, event):
-        self.camera.applyZoomDelta(event.angleDelta().y())
-
-    def mousePressEvent(self, event):
-        self.is_mouse_down = True
-        self.last_mouse_pos = event.pos()
-
-    def mouseReleaseEvent(self, event):
-        self.is_mouse_down = False
-
-    def mouseMoveEvent(self, event):
-        delta = event.pos() - self.last_mouse_pos
-        self.last_mouse_pos = event.pos()
-        self.camera.applyMovementDelta(delta)
+    def __show_load_window(self):
+        print("Show load window")
 
 
 def show_window():
     app = QApplication(sys.argv)
-    #window = mainWindow()
-    #window.setupUI()
-    #window.show()
-    album_visualizer = AlbumVisualizer()
-    album_visualizer.resize(1024, 1024)
-    album_visualizer.show()
-    timer = QTimer(album_visualizer)
-    timer.timeout.connect(album_visualizer.update)
-    timer.start(50)
+    mw = MainWindow()
+    mw.resize(1280, 1024)
+    mw.show()
+
     sys.exit(app.exec_())
-    return album_visualizer

@@ -5,10 +5,9 @@ from src.layout_creation.rect import Rect
 
 
 class ImageSceneObject:
-    def __init__(self, rect: Rect, image_path):
+    def __init__(self, rect: Rect, image):
         self.rect = rect
 
-        image = Image.open(image_path)
         width, height = image.size
 
         # Dirty hack for portrait textures, they seem to work with
