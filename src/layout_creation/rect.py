@@ -27,3 +27,9 @@ class Rect:
            Point(self.x + self.w, self.y),
            Point(self.x + self.w, self.y + self.h)
         ]
+
+    def max(self):
+        return Point(self.x + self.w, self.y + self.h)
+
+    def min(self):
+        return Point(self.x, self.y)

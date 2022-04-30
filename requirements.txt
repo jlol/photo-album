@@ -3,4 +3,4 @@ jsonpickle
 pillow
 PyQt5
 PyOpenGL
-numpy
+numpy==1.22.3

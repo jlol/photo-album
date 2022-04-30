@@ -12,23 +12,23 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
 
-        menuBar = self.menuBar()
-        fileMenu = QMenu("File", self)
+        menu_bar = self.menuBar()
+        file_menu = QMenu("File", self)
 
         save_action = QAction("Save", self)
         #save_action.setStatusTip("Select a file to use as a database")
         save_action.triggered.connect(self.__show_save_window)
-        fileMenu.addAction(save_action)
+        file_menu.addAction(save_action)
 
         load_action = QAction("Load", self)
         load_action.triggered.connect(self.__show_load_window)
-        fileMenu.addAction(load_action)
+        file_menu.addAction(load_action)
 
         quit_action = QAction("Exit", self)
         quit_action.triggered.connect(self.close)
-        fileMenu.addAction(quit_action)
+        file_menu.addAction(quit_action)
 
-        menuBar.addMenu(fileMenu)
+        menu_bar.addMenu(file_menu)
 
         image_provider = ImageProvider()
         self._project_handler = ProjectHandler(image_provider)

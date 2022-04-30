@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QSplitter, QVBoxLayout, QFrame
 from src.album_project.album import Vector2
 from src.layout_creation.image_provider import ImageProvider
 from src.logic.project_handler import ProjectHandler
-from src.ui.album_visualizer import AlbumVisualizer
+from src.opengl.album_visualizer import AlbumVisualizer
 from src.ui.event import Event
 from src.ui.image_list_ui import ImageListUI
 
@@ -91,6 +91,8 @@ class CentralWidget(QWidget):
         clear_images.attach(lambda: self._project_handler.images_cleared())
 
     def __render_pressed(self):
+
+        print("TODO: Check here there are photos assigned")
         page = self._project_handler.update_layout()
         self.album_visualizer.cleanup_photos()
         for p in page.photos:

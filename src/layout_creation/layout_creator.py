@@ -23,6 +23,7 @@ class LayoutCreator:
         self.border_color = border_color
 
     def create_layout(self) -> Layout:
+        assert self.__image_provider.number_of_images() > 0, "Trying to create a layout without images"
         self.layout = Layout(self.width, self.height,
                              self.border, self.border_color)
         self.__generate_random_tree()
