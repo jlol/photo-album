@@ -36,7 +36,7 @@ class ImageSceneObject:
         # Initialize UV
         self.uv_min = Vector2(0, 0)
         self.uv_max = Vector2(1, 1)
-        self._uv_offset = Vector2(0, 0)
+        self.uv_offset = Vector2(0, 0)
 
         width_ratio = width / rect.w
         height_ratio = height / rect.h
@@ -50,26 +50,26 @@ class ImageSceneObject:
 
     def add_uv_offset(self, delta: Vector2):
         if self._lock_height_uv:
-            self._uv_offset.x -= delta.x
+            self.uv_offset.x -= delta.x
         else:
-            self._uv_offset.y += delta.y
+            self.uv_offset.y += delta.y
 
-        resulting_uv_min = self.uv_min + self._uv_offset
-        resulting_uv_max = self.uv_max + self._uv_offset
+        resulting_uv_min = self.uv_min + self.uv_offset
+        resulting_uv_max = self.uv_max + self.uv_offset
 
         if resulting_uv_max.x > 1.0:
             diff = resulting_uv_max.x - 1.0
-            self._uv_offset.x -= diff
+            self.uv_offset.x -= diff
         elif resulting_uv_min.x < 0.0:
             diff = resulting_uv_min.x
-            self._uv_offset.x -= diff
+            self.uv_offset.x -= diff
 
         if resulting_uv_max.y > 1.0:
             diff = resulting_uv_max.y - 1.0
-            self._uv_offset.y -= diff
+            self.uv_offset.y -= diff
         elif resulting_uv_min.y < 0.0:
             diff = resulting_uv_min.y
-            self._uv_offset.y -= diff
+            self.uv_offset.y -= diff
 
 
     def draw(self):
@@ -81,8 +81,8 @@ class ImageSceneObject:
 
         uv_min = Vector2(self.uv_min.x, self.uv_min.y)
         uv_max = Vector2(self.uv_max.x, self.uv_max.y)
-        uv_min += self._uv_offset
-        uv_max += self._uv_offset
+        uv_min += self.uv_offset
+        uv_max += self.uv_offset
 
         glBegin(GL_QUADS)
         glTexCoord2f(uv_min.x, uv_max.y)

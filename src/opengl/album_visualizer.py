@@ -19,8 +19,8 @@ class MouseMode(Enum):
 
 
 class AlbumVisualizer(QOpenGLWidget):
-
-    def __init__(self, image_provider: ImageProvider):
+    # TODO: use an interface for project handler
+    def __init__(self, image_provider: ImageProvider, project_handler):
         super().__init__()
         self.is_mouse_down = False
         self.last_mouse_pos = QPoint()
@@ -32,6 +32,7 @@ class AlbumVisualizer(QOpenGLWidget):
         self._image_provider = image_provider
         self._mouse_mode = MouseMode.NONE
         self._selected_object_index = -1
+        self._layout_change_listener = project_handler
 
         timer = QTimer(self)
         timer.timeout.connect(self.update)
@@ -117,3 +118,4 @@ class AlbumVisualizer(QOpenGLWidget):
         delta.x *= 0.001
         delta.y *= 0.001
         photo.add_uv_offset(delta)
+        self._layout_change_listener.image_offset_applied(index, photo.uv_offset)

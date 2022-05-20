@@ -24,6 +24,10 @@ class MainWindow(QMainWindow):
         load_action.triggered.connect(self.__show_load_window)
         file_menu.addAction(load_action)
 
+        render_action = QAction("Render", self)
+        render_action.triggered.connect(self.__render)
+        file_menu.addAction(render_action)
+
         quit_action = QAction("Exit", self)
         quit_action.triggered.connect(self.close)
         file_menu.addAction(quit_action)
@@ -37,9 +41,13 @@ class MainWindow(QMainWindow):
 
     def __show_save_window(self):
         print("Show save window")
+        self._project_handler.save_project("/home/woody/albumtest/")
 
     def __show_load_window(self):
         print("Show load window")
+
+    def __render(self):
+        self._project_handler.render("/home/woody/albumtest/")
 
 
 def show_window():

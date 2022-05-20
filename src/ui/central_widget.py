@@ -47,7 +47,7 @@ class CentralWidget(QWidget):
         splitter.addWidget(left)
 
         # Add Opengl viewer
-        self.album_visualizer = AlbumVisualizer(self._image_provider)
+        self.album_visualizer = AlbumVisualizer(self._image_provider, self._project_handler)
         self.album_visualizer.resize(1024, 1024)
         splitter.addWidget(self.album_visualizer)
 

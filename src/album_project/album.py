@@ -28,6 +28,9 @@ class Page:
         self.border = border
         self.size = size
 
+    def get_size_as_tuple(self) -> (int, int):
+        return self.size.x, self.size.y
+
     def add_photo(self, photo: Photo):
         self.photos.append(photo)
 
