@@ -43,14 +43,14 @@ class PageRenderer:
         original_image_size = Vector2.from_array(image.size)
         scaled_size = ImageUtils.scale_size_respecting_ratio(original_image_size, photo.get_size_without_borders())
         adjusted_image = image.resize((int(scaled_size.x), int(scaled_size.y)), Image.ANTIALIAS)
-        return adjusted_image.crop(PageRenderer._get_image_crop_as_pil_box(photo))
+        return adjusted_image.crop(PageRenderer._get_image_crop_as_pil_box(adjusted_image, photo))
 
     @staticmethod
-    def _get_image_crop_as_pil_box(photo: Photo) -> (int, int, int, int):
+    def _get_image_crop_as_pil_box(image: Image, photo: Photo) -> (int, int, int, int):
         offset = photo.offset
         rect_minus_borders = photo.rect_minus_borders
-        left = int(offset.x)
+        left = int(offset.x * image.size[0])
         right = left + int(rect_minus_borders.w)
-        up = int(offset.y)
+        up = int(offset.y * image.size[1])
         down = up + int(rect_minus_borders.h)
         return left, up, right, down
