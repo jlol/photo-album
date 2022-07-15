@@ -44,4 +44,4 @@ class LayoutRenderer:
     def _scale_size(self, original_size, new_size) -> Tuple[int, int]:
         new_size_floats = ImageUtils.scale_size_respecting_ratio(Vector2.from_array(original_size),
                                                                  Vector2.from_array(new_size))
-        return int(new_size_floats[0]), int(new_size_floats[1])
+        return int(new_size_floats.x), int(new_size_floats.y)

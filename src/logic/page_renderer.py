@@ -2,6 +2,9 @@ from PIL import Image
 
 from src.album_project.album import Album, Page, Photo
 from src.layout_creation.image_provider import ImageProvider
+from src.layout_creation.rect import Rect
+from src.utils import ImageUtils
+from src.utils.MathUtils import Vector2
 
 
 class PageRenderer:
@@ -20,12 +23,27 @@ class PageRenderer:
 
         for p in page.photos:
             image = self._image_provider.get_image(p.path)
-            adjusted_image = self._get_correct_size_photo(image, p)
-            im.paste(adjusted_image, p.rect_minus_borders.as_pil_paste_box())
+            print(p.path)
+            adjusted_image = self._get_size_corrected_image(image, p)
+            im.paste(adjusted_image, self._get_paste_box(p.rect_minus_borders, int(page.size.y)))
 
-        im.save(path + str(index) + ".png")
+        absolute_path = path + str(index) + ".png"
+        im.save(absolute_path)
+        print("Saved image to " + absolute_path)
 
-    def _get_correct_size_photo(self, image: Image, photo: Photo) -> Image:
-        adjusted_image = image
+    def _get_paste_box(self, rect_minus_borders: Rect, page_height: int):
+        left = int(rect_minus_borders.x)
+        right = left + int(rect_minus_borders.w)
+        down = page_height - int(rect_minus_borders.y)
+        up = page_height - int(rect_minus_borders.h + rect_minus_borders.y)
+        print("--")
+        print(rect_minus_borders)
+        print((left, up, right, down))
+        return left, up, right, down
 
-        return adjusted_image
+    @staticmethod
+    def _get_size_corrected_image(image: Image, photo: Photo) -> Image:
+        original_image_size = Vector2.from_array(image.size)
+        scaled_size = ImageUtils.scale_size_respecting_ratio(original_image_size, photo.get_size_without_borders())
+        adjusted_image = image.resize((int(scaled_size.x), int(scaled_size.y)), Image.ANTIALIAS)
+        return adjusted_image.crop(photo.get_own_crop_as_pil_box())
