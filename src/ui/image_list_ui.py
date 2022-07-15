@@ -4,13 +4,13 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QPushButton, QFileDialog
 
+from src.ui import UiUtils
 from src.ui.clickable_label import ClickableLabel
 from src.ui.event import Event
 
 
 class ImageListUI:
 
-    FILE_FILTER = 'Image files (*.jpg *.jpeg *.png)'
     THUMBNAIL_WIDTH = 150
     THUMBNAIL_HEIGHT = 150
 
@@ -37,7 +37,7 @@ class ImageListUI:
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.ExistingFiles)
         dlg.setOption(QFileDialog.DontUseNativeDialog)
-        dlg.setNameFilter(self.FILE_FILTER)
+        dlg.setNameFilter(UiUtils.INPUT_IMAGE_FILE_FILTER)
 
         if not dlg.exec_():
             return

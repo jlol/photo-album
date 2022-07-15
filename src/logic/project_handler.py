@@ -99,6 +99,8 @@ class ProjectHandler:
     def save_project(self, path: str):
         print("Should save to " + path)
 
+    def load_project(self, path: str):
+        print("Should load from " + path)
 
     def render(self, path: str):
         renderer = PageRenderer(self._image_provider)

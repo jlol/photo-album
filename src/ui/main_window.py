@@ -8,7 +8,7 @@ from src.logic.project_handler import ProjectHandler
 from src.ui import UiUtils
 from src.ui.central_widget import CentralWidget
 
-
+# TODO: save in some configuration the latest directory used
 DEFAULT_DIRECTORY = "/home/woody/albumtest/"
 
 
@@ -21,7 +21,6 @@ class MainWindow(QMainWindow):
         file_menu = QMenu("File", self)
 
         save_action = QAction("Save", self)
-        #save_action.setStatusTip("Select a file to use as a database")
         save_action.triggered.connect(self.__show_save_window)
         file_menu.addAction(save_action)
 
@@ -60,13 +59,13 @@ class MainWindow(QMainWindow):
         name = QFileDialog.getOpenFileName(self, 'Open Project', DEFAULT_DIRECTORY, "(*.pa)")
         if not name or not name[0]:
             return
-        print(name[0])
+        self._project_handler.load_project(name[0])
 
     def __render(self):
-        path = QFileDialog.getOpenFileName(self, 'Open Project', DEFAULT_DIRECTORY, UiUtils.OUTPUT_IMAGE_FILE_FILTER)
+        path = QFileDialog.getExistingDirectory(self, 'Render to...', DEFAULT_DIRECTORY)
         if not path or not path[0]:
             return
-        self._project_handler.render(path)
+        self._project_handler.render(path + "/")
 
 
 def show_window():
