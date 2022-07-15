@@ -1,9 +1,8 @@
 import sys
 
-from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 
-from src.layout_creation.image_provider import ImageProvider
+from src.utils.image_cache import ImageCache
 from src.logic.project_handler import ProjectHandler
 from src.ui import UiUtils
 from src.ui.central_widget import CentralWidget
@@ -12,6 +11,7 @@ from src.ui.central_widget import CentralWidget
 DEFAULT_DIRECTORY = "/home/woody/albumtest/"
 
 
+# TODO: add an options dialog to set default project page size, border, etc.
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
 
         menu_bar.addMenu(file_menu)
 
-        image_provider = ImageProvider()
+        image_provider = ImageCache()
         self._project_handler = ProjectHandler(image_provider)
         cw = CentralWidget(image_provider, self._project_handler)
         self.setCentralWidget(cw)

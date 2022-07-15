@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QSplitter, QVBoxLayout, QFrame
     QStyleFactory, QSpacerItem, QSizePolicy
 
 from src.album_project.album import Page
-from src.layout_creation.image_provider import ImageProvider
+from src.utils.image_cache import ImageCache
 from src.logic.project_handler import ProjectHandler
 from src.opengl.album_visualizer import AlbumVisualizer
 from src.ui import UiUtils
@@ -13,7 +13,7 @@ from src.utils.MathUtils import Vector2
 
 
 class CentralWidget(QWidget):
-    def __init__(self, image_provider: ImageProvider, project_handler: ProjectHandler):
+    def __init__(self, image_provider: ImageCache, project_handler: ProjectHandler):
         super(CentralWidget, self).__init__()
         self._image_provider = image_provider
         self._project_handler = project_handler
@@ -35,6 +35,7 @@ class CentralWidget(QWidget):
         left_vbox.addWidget(page_selector)
         add_page_button = QPushButton("Add page")
         left_vbox.addWidget(add_page_button)
+        # TODO: stop using magic numbers and have a dialog to select the page size, border, etc (or temporarily keep per project page size)
         add_page_button.clicked.connect(lambda: self._project_handler.add_page(Vector2(3508, 2480), 2.0))
 
         # Render and project

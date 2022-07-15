@@ -4,7 +4,7 @@ from OpenGL import GL as gl
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer
 from PyQt5.QtWidgets import QOpenGLWidget
 
-from src.layout_creation.image_provider import ImageProvider
+from src.utils.image_cache import ImageCache
 from src.layout_creation.rect import Rect
 from src.opengl.camera import Camera
 from src.opengl.camera_raycast import CameraRaycast
@@ -20,7 +20,7 @@ class MouseMode(Enum):
 
 class AlbumVisualizer(QOpenGLWidget):
     # TODO: use an interface for project handler
-    def __init__(self, image_provider: ImageProvider, project_handler):
+    def __init__(self, image_provider: ImageCache, project_handler):
         super().__init__()
         self.is_mouse_down = False
         self.last_mouse_pos = QPoint()

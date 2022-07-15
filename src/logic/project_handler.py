@@ -1,22 +1,24 @@
 from src.album_project import album_utils
-from src.album_project.album import Page, Album, Vector2, Photo
-from src.layout_creation.image_provider import ImageProvider
+from src.album_project.album import Page, Album, Vector2
+from src.utils.image_cache import ImageCache
 from src.layout_creation.layout_creator import LayoutCreator
 from src.logic.page_renderer import PageRenderer
 from src.utils.custom_event import CustomEvent
 
 MAX_ITERATIONS = 20
+DEFAULT_PAGE_SIZE = Vector2(3508, 2480)
+DEFAULT_BORDER = 20.0
 
 
 class ProjectHandler:
-    def __init__(self, image_provider: ImageProvider):
+    def __init__(self, image_provider: ImageCache):
         self._current_page_index = 0
         self._album = Album()
         self._current_page_photos: [str] = []
         self._current_page_size = Vector2(0, 0)
         self._current_page_border = 0.0
         self._current_page_bg_color = (255, 255, 255)
-        self.add_page(Vector2(3508, 2480), 20.0)
+        self.add_page(DEFAULT_PAGE_SIZE, DEFAULT_BORDER)
         self._image_provider = image_provider
         self.on_page_change_event = CustomEvent()
 
@@ -39,13 +41,14 @@ class ProjectHandler:
         for p in page.photos:
             self._current_page_photos.append(p.path)
 
+        self.on_page_change_event(page)
 
     def add_page(self, size: Vector2, border: float, bg_color=(255, 255, 255)):
-        self._current_page_index = -1
         self._current_page_size = size
         self._current_page_border = border
         self._current_page_bg_color = bg_color
         self._current_page_photos.clear()
+        self._album.add_page(Page(size, border, bg_color))
 
     def images_added(self, filenames: [str]):
         self._current_page_photos.extend(filenames)
@@ -82,13 +85,7 @@ class ProjectHandler:
                 layout = tmp_layout
 
         page = album_utils.layout_to_page(layout)
-
-        if self._current_page_index < 0:
-            self._album.add_page(page)
-            self._current_page_index = 0
-        else:
-            self._album.replace_page(self._current_page_index, page)
-
+        self._album.replace_page(self._current_page_index, page)
         return page
 
     def image_offset_applied(self, index: int, offset: Vector2):

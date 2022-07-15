@@ -1,7 +1,7 @@
 from PIL import Image
 
 from src.album_project.album import Album, Page, Photo
-from src.layout_creation.image_provider import ImageProvider
+from src.utils.image_cache import ImageCache
 from src.layout_creation.rect import Rect
 from src.utils import ImageUtils
 from src.utils.MathUtils import Vector2
@@ -11,7 +11,7 @@ class PageRenderer:
     # TODO in the future image_provider should only handle miniatures to save space, the images should be
     # directly loaded from disk
     # TODO check PIL image modes for better color quality
-    def __init__(self, image_provider: ImageProvider):
+    def __init__(self, image_provider: ImageCache):
         self._image_provider = image_provider
 
     def render_album(self, album: Album, path: str):

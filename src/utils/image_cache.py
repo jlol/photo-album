@@ -8,7 +8,7 @@ class Size:
         self.height = h
 
 
-class ImageProvider:
+class ImageCache:
 
     def __init__(self):
         self.__img_dict = {}
