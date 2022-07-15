@@ -19,6 +19,10 @@ class ProjectHandler:
         self.add_page(Vector2(3508, 2480), 20.0)
         self._image_provider = image_provider
 
+    # TODO: keep track of unsaved changes
+    def has_changes(self):
+        return False
+
     def select_page(self, page_index: int) -> [str]:
         if self._album.number_of_pages() <= page_index or page_index < 0:
             print("Page doesn't exist")
@@ -94,6 +98,7 @@ class ProjectHandler:
 
     def save_project(self, path: str):
         print("Should save to " + path)
+
 
     def render(self, path: str):
         renderer = PageRenderer(self._image_provider)

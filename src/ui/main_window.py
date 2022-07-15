@@ -1,10 +1,15 @@
 import sys
 
+from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
 
 from src.layout_creation.image_provider import ImageProvider
 from src.logic.project_handler import ProjectHandler
+from src.ui import UiUtils
 from src.ui.central_widget import CentralWidget
+
+
+DEFAULT_DIRECTORY = "/home/woody/albumtest/"
 
 
 class MainWindow(QMainWindow):
@@ -40,14 +45,28 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(cw)
 
     def __show_save_window(self):
-        print("Show save window")
-        self._project_handler.save_project("/home/woody/albumtest/")
+        name = QFileDialog.getSaveFileName(self, 'Save Project', DEFAULT_DIRECTORY + "project.pa", "(*.pa)")
+        if not name or not name[0]:
+            return
+        self._project_handler.save_project(name[0])
 
     def __show_load_window(self):
-        print("Show load window")
+        if self._project_handler.has_changes():
+            # TODO: allow discarding changes
+            msg = UiUtils.get_warning_window("Current project has changes, please save it. This message should allow to continue with discard changes option")
+            msg.exec()
+            return
+
+        name = QFileDialog.getOpenFileName(self, 'Open Project', DEFAULT_DIRECTORY, "(*.pa)")
+        if not name or not name[0]:
+            return
+        print(name[0])
 
     def __render(self):
-        self._project_handler.render("/home/woody/albumtest/")
+        path = QFileDialog.getOpenFileName(self, 'Open Project', DEFAULT_DIRECTORY, UiUtils.OUTPUT_IMAGE_FILE_FILTER)
+        if not path or not path[0]:
+            return
+        self._project_handler.render(path)
 
 
 def show_window():
