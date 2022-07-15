@@ -104,11 +104,10 @@ class AlbumVisualizer(QOpenGLWidget):
         delta = event.pos() - self.last_mouse_pos
         self.last_mouse_pos = event.pos()
 
-        if self._mouse_mode == MouseMode.OBJECT:
-            self.__apply_delta_to_photo(self._selected_object_index, Vector2(delta.x(), delta.y()))
-            return
-        elif self._mouse_mode == MouseMode.CAMERA_MOVE:
+        if self._mouse_mode == MouseMode.CAMERA_MOVE or event.buttons() == Qt.MiddleButton:
             self.camera.apply_movement_delta(delta)
+        elif self._mouse_mode == MouseMode.OBJECT:
+            self.__apply_delta_to_photo(self._selected_object_index, Vector2(delta.x(), delta.y()))
 
     def __apply_delta_to_photo(self, index: int, delta: Vector2):
         if index >= len(self.photos) or index < 0:
