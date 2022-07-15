@@ -6,7 +6,7 @@ from src.utils.MathUtils import Vector2
 
 
 class ImageSceneObject:
-    def __init__(self, rect: Rect, image):
+    def __init__(self, image: Image, rect: Rect, offset: Vector2):
         self.rect = rect
 
         width, height = image.size
@@ -36,7 +36,7 @@ class ImageSceneObject:
         # Initialize UV
         self.uv_min = Vector2(0, 0)
         self.uv_max = Vector2(1, 1)
-        self.uv_offset = Vector2(0, 0)
+        self.uv_offset = offset
 
         width_ratio = width / rect.w
         height_ratio = height / rect.h

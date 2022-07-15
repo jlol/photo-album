@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QSplitter, QVBoxLayout, QFrame, QSpinBox, QPushButton, QApplication, \
     QStyleFactory, QSpacerItem, QSizePolicy
 
+from src.album_project.album import Page
 from src.layout_creation.image_provider import ImageProvider
 from src.logic.project_handler import ProjectHandler
 from src.opengl.album_visualizer import AlbumVisualizer
@@ -16,6 +17,7 @@ class CentralWidget(QWidget):
         super(CentralWidget, self).__init__()
         self._image_provider = image_provider
         self._project_handler = project_handler
+        self._project_handler.on_page_change_event += self.on_page_changed
         self.initUI()
 
     def initUI(self):
@@ -62,6 +64,12 @@ class CentralWidget(QWidget):
         self.setGeometry(0, 0, 1280, 1024)
         self.setWindowTitle('Photo Album')
 
+    def on_page_changed(self, page: Page):
+        assert page, "Page is null"
+        self.album_visualizer.cleanup_photos()
+        for p in page.photos:
+            self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.offset)
+
     def __page_selected(self, index: int):
         photo_list = self._project_handler.select_page(index)
 
@@ -100,4 +108,4 @@ class CentralWidget(QWidget):
         page = self._project_handler.update_layout()
         self.album_visualizer.cleanup_photos()
         for p in page.photos:
-            self.album_visualizer.add_photo(p.rect_minus_borders, p.path)
+            self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.offset)

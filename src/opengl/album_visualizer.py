@@ -44,10 +44,10 @@ class AlbumVisualizer(QOpenGLWidget):
     def resizeGL(self, w, h):
         self.camera.resizeGL(QSize(w, h))
 
-    def add_photo(self, rect: Rect, path):
+    def add_photo(self, path: str, rect: Rect, offset: Vector2):
         self.makeCurrent()
         image = self._image_provider.get_image(path)
-        photo = ImageSceneObject(rect, image)
+        photo = ImageSceneObject(image, rect, offset)
         self.rects.append(rect)
         self.photos.append(photo)
 

@@ -3,7 +3,7 @@ from src.album_project.album import Page, Album, Vector2, Photo
 from src.layout_creation.image_provider import ImageProvider
 from src.layout_creation.layout_creator import LayoutCreator
 from src.logic.page_renderer import PageRenderer
-
+from src.utils.custom_event import CustomEvent
 
 MAX_ITERATIONS = 20
 
@@ -18,6 +18,7 @@ class ProjectHandler:
         self._current_page_bg_color = (255, 255, 255)
         self.add_page(Vector2(3508, 2480), 20.0)
         self._image_provider = image_provider
+        self.on_page_change_event = CustomEvent()
 
     # TODO: keep track of unsaved changes
     def has_changes(self):
@@ -97,11 +98,30 @@ class ProjectHandler:
         photo.offset = offset
 
     def save_project(self, path: str):
-        print("Should save to " + path)
+        assert path, "Path shouldn't be empty or null"
+        print("Saving album to " + path)
+        album_utils.save_album(self._album, path)
 
     def load_project(self, path: str):
-        print("Should load from " + path)
+        assert path, "Path shouldn't be empty or null"
+        print("Loading album from " + path)
+        self._album = album_utils.load_album(path)
+        self._current_page_index = 0
+        current_page = self._album.get_page(0)
+        self._current_page_photos: [str] = []
+
+        for p in current_page.photos:
+            self._current_page_photos.append(p)
+
+        self._current_page_size = current_page.size
+        # TODO: need to modify through ui border, page size, etc
+        self._current_page_border = 0.0
+        self._current_page_bg_color = (255, 255, 255)
+        self.add_page(Vector2(3508, 2480), 20.0)
+        self._image_provider.cleanup()
+        self.on_page_change_event(current_page)
 
     def render(self, path: str):
+        assert path, "Path shouldn't be empty or null"
         renderer = PageRenderer(self._image_provider)
         renderer.render_album(self._album, path)
