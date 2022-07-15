@@ -71,7 +71,6 @@ class ImageSceneObject:
             diff = resulting_uv_min.y
             self.uv_offset.y -= diff
 
-
     def draw(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         glEnable(GL_TEXTURE_2D)
