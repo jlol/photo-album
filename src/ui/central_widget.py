@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QSplitter, QVBoxLayout, QFrame
 from src.layout_creation.image_provider import ImageProvider
 from src.logic.project_handler import ProjectHandler
 from src.opengl.album_visualizer import AlbumVisualizer
+from src.ui import UiUtils
 from src.ui.event import Event
 from src.ui.image_list_ui import ImageListUI
 from src.utils.MathUtils import Vector2
@@ -91,8 +92,11 @@ class CentralWidget(QWidget):
         clear_images.attach(lambda: self._project_handler.images_cleared())
 
     def __render_pressed(self):
+        if not self._project_handler.has_photos_in_current_page():
+            msg = UiUtils.get_warning_window("Cannot create layout, no photos for page")
+            msg.exec()
+            return
 
-        print("TODO: Check here there are photos assigned")
         page = self._project_handler.update_layout()
         self.album_visualizer.cleanup_photos()
         for p in page.photos:

@@ -52,8 +52,11 @@ class ProjectHandler:
     def images_cleared(self):
         self._current_page_photos.clear()
 
+    def has_photos_in_current_page(self) -> bool:
+        return len(self._current_page_photos) > 0
+
     def update_layout(self) -> Page:
-        assert len(self._current_page_photos) > 0, "Cannot update a layout without photos"
+        assert self.has_photos_in_current_page(), "Cannot update a layout without photos"
 
         for img in self._current_page_photos:
             self._image_provider.add_image(img)
