@@ -5,6 +5,8 @@ from PIL import Image
 from src.layout_creation.layout import Layout
 from src.layout_creation.node_data import NodeData
 from src.layout_creation.rect import Rect
+from src.utils import ImageUtils
+from src.utils.MathUtils import Vector2
 
 
 class LayoutRenderer:
@@ -26,7 +28,7 @@ class LayoutRenderer:
 
             final_rect = data.get_rect_after_borders_applied(self.layout.border)
             new_size = (int(final_rect.w), int(final_rect.h))
-            scale = self.scale_size(new_size, tmp_image.size)
+            scale = self._scale_size(tmp_image.size, new_size)
             tmp_image = tmp_image.resize(scale, PIL.Image.LANCZOS)
 
             crop_width = new_size[0]
@@ -39,15 +41,7 @@ class LayoutRenderer:
 
         return result
 
-    def scale_size(self, new_size, original_size) -> Tuple[int, int]:
-        original_ratio = original_size[0] / original_size[1]
-        new_ratio = new_size[0] / new_size[1]
-        scale_x = new_size[0]
-        scale_y = new_size[1]
-
-        if new_ratio > original_ratio:
-            scale_y = scale_x / original_ratio
-        else:
-            scale_x = scale_y * original_ratio
-
-        return (int(scale_x), int(scale_y))
+    def _scale_size(self, original_size, new_size) -> Tuple[int, int]:
+        new_size_floats = ImageUtils.scale_size_respecting_ratio(Vector2.from_array(original_size),
+                                                                 Vector2.from_array(new_size))
+        return int(new_size_floats[0]), int(new_size_floats[1])

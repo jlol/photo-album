@@ -1,6 +1,6 @@
 from PIL import Image
 
-from src.album_project.album import Album, Page
+from src.album_project.album import Album, Page, Photo
 from src.layout_creation.image_provider import ImageProvider
 
 
@@ -16,11 +16,16 @@ class PageRenderer:
             self._render_page(i, album.get_page(i), path)
 
     def _render_page(self, index: int, page: Page, path: str):
-        im = Image.new('RGB', page.get_size_as_tuple(), color = page.border_color)
+        im = Image.new('RGB', page.get_size_as_tuple(), color=page.border_color)
 
         for p in page.photos:
-            photo = self._image_provider.get_image(p.path)
-            # TODO: do resizing if needed and offset applying
-            im.paste(photo, p.rect.as_tuple())
+            image = self._image_provider.get_image(p.path)
+            adjusted_image = self._get_correct_size_photo(image, p)
+            im.paste(adjusted_image, p.rect_minus_borders.as_pil_paste_box())
 
         im.save(path + str(index) + ".png")
+
+    def _get_correct_size_photo(self, image: Image, photo: Photo) -> Image:
+        adjusted_image = image
+
+        return adjusted_image

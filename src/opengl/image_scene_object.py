@@ -1,8 +1,8 @@
 from PIL import Image
 from OpenGL.GL import *
 
-from src.album_project.album import Vector2
 from src.layout_creation.rect import Rect
+from src.utils.MathUtils import Vector2
 
 
 class ImageSceneObject:

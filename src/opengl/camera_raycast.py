@@ -1,6 +1,6 @@
-from src.album_project.album import Vector2
 from src.layout_creation.rect import Rect
 from src.opengl.camera import Camera
+from src.utils.MathUtils import Vector2
 
 
 class Result:

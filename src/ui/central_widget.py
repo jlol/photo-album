@@ -2,12 +2,12 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QSplitter, QVBoxLayout, QFrame, QSpinBox, QPushButton, QApplication, \
     QStyleFactory, QSpacerItem, QSizePolicy
 
-from src.album_project.album import Vector2
 from src.layout_creation.image_provider import ImageProvider
 from src.logic.project_handler import ProjectHandler
 from src.opengl.album_visualizer import AlbumVisualizer
 from src.ui.event import Event
 from src.ui.image_list_ui import ImageListUI
+from src.utils.MathUtils import Vector2
 
 
 class CentralWidget(QWidget):

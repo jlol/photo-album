@@ -33,3 +33,8 @@ class Rect:
 
     def min(self):
         return Point(self.x, self.y)
+
+    # Returns a 4-tuple with left, upper, right, lower
+    def as_pil_paste_box(self) -> (int, int, int, int):
+        # TODO: some encapsulation needed to certify that components are always int
+        return int(self.x), int(self.y), self.x + int(self.w), self.y + int(self.h)

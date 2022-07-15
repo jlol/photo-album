@@ -4,12 +4,12 @@ from OpenGL import GL as gl
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer
 from PyQt5.QtWidgets import QOpenGLWidget
 
-from src.album_project.album import Vector2
 from src.layout_creation.image_provider import ImageProvider
 from src.layout_creation.rect import Rect
 from src.opengl.camera import Camera
 from src.opengl.camera_raycast import CameraRaycast
 from src.opengl.image_scene_object import ImageSceneObject
+from src.utils.MathUtils import Vector2
 
 
 class MouseMode(Enum):

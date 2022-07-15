@@ -1,7 +1,7 @@
 import OpenGL.GL as gl
 from OpenGL.GLU import *
 
-from src.album_project.album import Vector2
+from src.utils.MathUtils import Vector2
 
 ZNEAR = 0
 

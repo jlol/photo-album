@@ -1,9 +1,8 @@
 from src.album_project import album_utils
-from src.album_project.album import Page, Album, Vector2
+from src.album_project.album import Page, Album, Vector2, Photo
 from src.layout_creation.image_provider import ImageProvider
 from src.layout_creation.layout_creator import LayoutCreator
 from src.logic.page_renderer import PageRenderer
-from src.ui.event import Event
 
 
 MAX_ITERATIONS = 20
@@ -13,7 +12,7 @@ class ProjectHandler:
     def __init__(self, image_provider: ImageProvider):
         self._current_page_index = 0
         self._album = Album()
-        self._current_page_photos = []
+        self._current_page_photos: [str] = []
         self._current_page_size = Vector2(0, 0)
         self._current_page_border = 0.0
         self._current_page_bg_color = (255, 255, 255)
@@ -86,7 +85,8 @@ class ProjectHandler:
         return page
 
     def image_offset_applied(self, index: int, offset: Vector2):
-        photo = self._current_page_photos[index]
+        current_page = self._album.get_page(self._current_page_index)
+        photo = current_page.photos[index]
         photo.offset = offset
 
     def save_project(self, path: str):
