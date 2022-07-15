@@ -24,7 +24,7 @@ class ProjectHandler:
     def has_changes(self):
         return False
 
-    def select_page(self, page_index: int) -> [str]:
+    def select_page(self, page_index: int):
         if self._album.number_of_pages() <= page_index or page_index < 0:
             print("Page doesn't exist")
             return
@@ -37,9 +37,8 @@ class ProjectHandler:
         self._current_page_photos.clear()
 
         for p in page.photos:
-            self._current_page_photos.append(p)
+            self._current_page_photos.append(p.path)
 
-        return self._current_page_photos
 
     def add_page(self, size: Vector2, border: float, bg_color=(255, 255, 255)):
         self._current_page_index = -1

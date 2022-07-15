@@ -71,7 +71,7 @@ class CentralWidget(QWidget):
             self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.offset)
 
     def __page_selected(self, index: int):
-        photo_list = self._project_handler.select_page(index)
+        self._project_handler.select_page(index)
 
     def __photo_handling_setup(self, left_vbox):
         # Photo handling
@@ -89,7 +89,7 @@ class CentralWidget(QWidget):
         left_vbox.addItem(vspacer)
 
         # Thumbnails controller
-        self.image_list = ImageListUI(thumbnail_layout, add_photo_button, clear_photos_button)
+        self.image_list = ImageListUI(thumbnail_layout, add_photo_button, clear_photos_button, self._project_handler)
 
         # Project Handler events
         image_removed: Event = self.image_list.image_removed_event()

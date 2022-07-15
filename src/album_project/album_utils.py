@@ -32,3 +32,12 @@ def layout_to_page(layout: Layout) -> Page:
         page.add_photo(photo)
 
     return page
+
+
+def get_page_image_paths(page: Page) -> [str]:
+    paths = []
+
+    for p in page.photos:
+        paths.append(p.path)
+
+    return paths

@@ -13,9 +13,10 @@ ZOOM_SPEED = 0.001
 
 class Camera:
     def __init__(self, bg_color, ortho_size=1024):
-        self.camera_offset = [0, 0, 0]
+        # TODO: set initial position in parameters from config?
+        self.camera_offset = [700, 700, 0]
         self.ortho_size = ortho_size
-        self.zoom = 1
+        self.zoom = 0.5
         self.bg_color = bg_color
         self._widget_size = None
 

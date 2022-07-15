@@ -4,6 +4,9 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QPushButton, QFileDialog
 
+from src.album_project import album_utils
+from src.album_project.album import Page
+from src.logic.project_handler import ProjectHandler
 from src.ui import UiUtils
 from src.ui.clickable_label import ClickableLabel
 from src.ui.event import Event
@@ -16,13 +19,20 @@ class ImageListUI:
 
     def __init__(self, box_layout: QtWidgets.QVBoxLayout,
                  add_image_button: QPushButton,
-                 clear_images_button: QPushButton):
+                 clear_images_button: QPushButton,
+                 project_handler: ProjectHandler):
         add_image_button.clicked.connect(self.add_button_clicked)
         clear_images_button.clicked.connect(self.clear_button_clicked)
         self.box_layout = box_layout
         self._image_removed = Event()
         self._images_added_event = Event()
         self._clear_images_event = Event()
+        project_handler.on_page_change_event += self.on_page_changed
+
+    def on_page_changed(self, page: Page):
+        self.clear()
+        filenames = album_utils.get_page_image_paths(page)
+        self.__load_thumbnails_for_filenames(filenames, self.box_layout.count())
 
     def image_removed_event(self) -> Event:
         return self._image_removed
@@ -59,14 +69,16 @@ class ImageListUI:
         if filenames is None or len(filenames) == 0:
             return False
 
+        self.__load_thumbnails_for_filenames(filenames, self.box_layout.count())
+        return True
+
+    def __load_thumbnails_for_filenames(self, filenames: [str], starting_index: int):
         iconroot = os.path.dirname(__file__)
-        index = self.box_layout.count()
+        index = starting_index
 
         for file in filenames:
             self.__add_image_label(file, iconroot, index)
             index += 1
-
-        return True
 
     def __add_image_label(self, file, iconroot, index):
         label = ClickableLabel()
