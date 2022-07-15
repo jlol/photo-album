@@ -12,15 +12,6 @@ class Photo:
     def get_size_without_borders(self) -> Vector2:
         return Vector2(self.rect_minus_borders.w, self.rect_minus_borders.h)
 
-    def get_own_crop_as_pil_box(self) -> (int, int, int, int):
-        left = int(self.offset.x)
-        right = left + int(self.rect_minus_borders.w)
-        up = int(self.offset.y)
-        down = up + int(self.rect_minus_borders.h)
-        print("offset")
-        print(self.offset)
-        return left, up, right, down
-
 
 class Page:
     def __init__(self, size: Vector2, border=0.0, border_color=(255, 255, 255)):

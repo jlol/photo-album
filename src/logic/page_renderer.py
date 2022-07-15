@@ -23,22 +23,19 @@ class PageRenderer:
 
         for p in page.photos:
             image = self._image_provider.get_image(p.path)
-            print(p.path)
-            adjusted_image = self._get_size_corrected_image(image, p)
-            im.paste(adjusted_image, self._get_paste_box(p.rect_minus_borders, int(page.size.y)))
+            adjusted_image = PageRenderer._get_size_corrected_image(image, p)
+            im.paste(adjusted_image, PageRenderer._get_paste_box(p.rect_minus_borders, int(page.size.y)))
 
         absolute_path = path + str(index) + ".png"
         im.save(absolute_path)
         print("Saved image to " + absolute_path)
 
-    def _get_paste_box(self, rect_minus_borders: Rect, page_height: int):
+    @staticmethod
+    def _get_paste_box(rect_minus_borders: Rect, page_height: int):
         left = int(rect_minus_borders.x)
         right = left + int(rect_minus_borders.w)
         down = page_height - int(rect_minus_borders.y)
         up = page_height - int(rect_minus_borders.h + rect_minus_borders.y)
-        print("--")
-        print(rect_minus_borders)
-        print((left, up, right, down))
         return left, up, right, down
 
     @staticmethod
@@ -46,4 +43,14 @@ class PageRenderer:
         original_image_size = Vector2.from_array(image.size)
         scaled_size = ImageUtils.scale_size_respecting_ratio(original_image_size, photo.get_size_without_borders())
         adjusted_image = image.resize((int(scaled_size.x), int(scaled_size.y)), Image.ANTIALIAS)
-        return adjusted_image.crop(photo.get_own_crop_as_pil_box())
+        return adjusted_image.crop(PageRenderer._get_image_crop_as_pil_box(photo))
+
+    @staticmethod
+    def _get_image_crop_as_pil_box(photo: Photo) -> (int, int, int, int):
+        offset = photo.offset
+        rect_minus_borders = photo.rect_minus_borders
+        left = int(offset.x)
+        right = left + int(rect_minus_borders.w)
+        up = int(offset.y)
+        down = up + int(rect_minus_borders.h)
+        return left, up, right, down
