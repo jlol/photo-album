@@ -2,13 +2,15 @@ import copy
 from enum import Enum
 
 from OpenGL import GL as gl
+from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer
 from PyQt5.QtWidgets import QOpenGLWidget
 
+from src.logic.layout_change_listener import LayoutChangeListener
 from src.utils.image_cache import ImageCache
 from src.layout_creation.rect import Rect
 from src.opengl.camera import Camera
-from src.opengl.camera_raycast import CameraRaycast
+from src.opengl.camera_raycast import CameraRaycast, RaycastResult
 from src.opengl.image_scene_object import ImageSceneObject
 from src.utils.MathUtils import Vector2
 
@@ -21,7 +23,7 @@ class MouseMode(Enum):
 
 class AlbumVisualizer(QOpenGLWidget):
     # TODO: use an interface for project handler
-    def __init__(self, image_provider: ImageCache, project_handler):
+    def __init__(self, image_provider: ImageCache, layout_change_listener: LayoutChangeListener):
         super().__init__()
         self.is_mouse_down = False
         self.last_mouse_pos = QPoint()
@@ -33,7 +35,7 @@ class AlbumVisualizer(QOpenGLWidget):
         self._image_provider = image_provider
         self._mouse_mode = MouseMode.NONE
         self._selected_object_index = -1
-        self._layout_change_listener = project_handler
+        self._layout_change_listener = layout_change_listener
 
         timer = QTimer(self)
         timer.timeout.connect(self.update)
@@ -81,13 +83,18 @@ class AlbumVisualizer(QOpenGLWidget):
             self.window.close()
 
     def wheelEvent(self, event):
-        self.camera.apply_zoom_delta(event.angleDelta().y())
+        raycast_result = self._raycast_rects(event.pos())
+        scroll_delta = event.angleDelta().y()
+
+        if raycast_result.is_ok:
+            self._layout_change_listener.image_zoom_applied(raycast_result.value, scroll_delta)
+            return
+
+        self.camera.apply_zoom_delta(scroll_delta)
 
     def mousePressEvent(self, event):
         self.is_mouse_down = True
-
-        screen_point = Vector2(event.pos().x(), event.pos().y())
-        raycast_result = self._camera_raycast.raycast(screen_point, self.rects)
+        raycast_result = self._raycast_rects(event.pos())
         self.last_mouse_pos = event.pos()
 
         if raycast_result.is_ok:
@@ -119,3 +126,7 @@ class AlbumVisualizer(QOpenGLWidget):
         delta.y *= 0.001
         photo.add_uv_offset(delta)
         self._layout_change_listener.image_offset_applied(index, photo.uv_offset)
+
+    def _raycast_rects(self, mouse_position: QtCore.QPoint) -> RaycastResult:
+        screen_point = Vector2(mouse_position.x(), mouse_position.y())
+        return self._camera_raycast.raycast(screen_point, self.rects)

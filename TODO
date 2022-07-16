@@ -1,9 +1,13 @@
 - Remove page button 
+- Make ImageCache use reduced size images and set a memory limit
 - Cleanup, use injection framework
 - Add page options (size, borders, ..)
 - Add image cropping (by scrolling over a photo in the page)
 - Add image swap (right click two photos to swap)
 - Add borders dragging, to modify layout
+- Add "Save as" option in menu
+- Show warning when loading or closing without saving
+- Add shortcuts
 - Use threads
   - Sepparate UI from processing (Image loading?, rendering...)
   - Add a render UI with progress update
