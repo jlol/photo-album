@@ -1,4 +1,5 @@
 - Remove page button 
+- Cleanup, use injection framework
 - Add page options (size, borders, ..)
 - Add image cropping (by scrolling over a photo in the page)
 - Add image swap (right click two photos to swap)
@@ -12,4 +13,3 @@
   - Improve all UI looks
   - Add render options window
 - Unify Event and CustomEvent
-- Cleanup, use injection

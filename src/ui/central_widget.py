@@ -9,7 +9,6 @@ from src.opengl.album_visualizer import AlbumVisualizer
 from src.ui import UiUtils
 from src.ui.event import Event
 from src.ui.image_list_ui import ImageListUI
-from src.utils.MathUtils import Vector2
 
 
 class CentralWidget(QWidget):
