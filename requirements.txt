@@ -1,0 +1,6 @@
+anytree
+jsonpickle
+pillow
+PyQt5
+PyOpenGL
+numpy==1.22.3
