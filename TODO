@@ -1,1 +1,15 @@
+- Remove page button 
+- Add page options (size, borders, ..)
+- Add image cropping (by scrolling over a photo in the page)
+- Add image swap (right click two photos to swap)
+- Add borders dragging, to modify layout
+- Use threads
+  - Sepparate UI from processing (Image loading?, rendering...)
+  - Add a render UI with progress update
+- Render specific pages
+- Beautify UI
+  - Modify image list, add delete image area (circle with X?)
+  - Improve all UI looks
+  - Add render options window
 - Unify Event and CustomEvent
+- Cleanup, use injection

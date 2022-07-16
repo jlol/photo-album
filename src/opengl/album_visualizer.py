@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 
 from OpenGL import GL as gl
@@ -27,8 +28,8 @@ class AlbumVisualizer(QOpenGLWidget):
         bg_color = (0.5, 0.8, 0.7, 1.0)
         self.camera = Camera(bg_color)
         self._camera_raycast = CameraRaycast(self.camera)
-        self.photos = []
-        self.rects = []
+        self.photos: [ImageSceneObject] = []
+        self.rects: [Rect] = []
         self._image_provider = image_provider
         self._mouse_mode = MouseMode.NONE
         self._selected_object_index = -1
@@ -47,7 +48,7 @@ class AlbumVisualizer(QOpenGLWidget):
     def add_photo(self, path: str, rect: Rect, offset: Vector2):
         self.makeCurrent()
         image = self._image_provider.get_image(path)
-        photo = ImageSceneObject(image, rect, offset)
+        photo = ImageSceneObject(image, rect, copy.copy(offset))
         self.rects.append(rect)
         self.photos.append(photo)
 

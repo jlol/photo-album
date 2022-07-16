@@ -3,8 +3,8 @@ from typing import Tuple
 from random import randint
 from anytree import Node
 
-from src.utils.image_cache import ImageCache
 from src.layout_creation.layout import Layout
+from src.layout_creation.layout_image_provider import LayoutImageProvider
 from src.layout_creation.node_data import SplitType, NodeData
 from src.layout_creation.rect import Rect
 
@@ -13,7 +13,7 @@ class LayoutCreator:
 
     def __init__(
             self, size: Tuple[int, int],
-            image_provider: ImageCache, border: int,
+            image_provider: LayoutImageProvider, border: int,
             border_color
     ):
         self.width = size[0]
