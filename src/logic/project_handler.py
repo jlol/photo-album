@@ -121,7 +121,6 @@ class ProjectHandler:
         # TODO: need to modify through ui border, page size, etc
         self.__current_page_border = 0.0
         self.__current_page_bg_color = (255, 255, 255)
-        # self.add_page(Vector2(3508, 2480), 20.0)
         self.__image_cache.cleanup()
         self.on_page_change_event(current_page)
         self.on_page_count_changed_event(self.__album.number_of_pages())
