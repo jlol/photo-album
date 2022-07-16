@@ -88,7 +88,7 @@ class AlbumVisualizer(QOpenGLWidget):
         scroll_delta = event.angleDelta().y()
 
         if raycast_result.is_ok:
-            self._layout_change_listener.image_zoom_applied(raycast_result.value, scroll_delta)
+            self._apply_zoom(raycast_result.value, scroll_delta)
             return
 
         self.camera.apply_zoom_delta(scroll_delta)
@@ -121,7 +121,7 @@ class AlbumVisualizer(QOpenGLWidget):
             return
 
         swap_index_b = self._selected_object_index
-        self._layout_change_listener.image_swap(self._swap_index_a, swap_index_b)
+        self._swap_photos(self._swap_index_a, swap_index_b)
         self._swap_index_a = -1
 
     def mouseMoveEvent(self, event):
@@ -131,9 +131,9 @@ class AlbumVisualizer(QOpenGLWidget):
         if event.buttons() == Qt.MiddleButton:
             self.camera.apply_movement_delta(delta)
         elif self._mouse_mode == MouseMode.OBJECT:
-            self.__apply_delta_to_photo(self._selected_object_index, Vector2(delta.x(), delta.y()))
+            self._apply_delta_to_photo(self._selected_object_index, Vector2(delta.x(), delta.y()))
 
-    def __apply_delta_to_photo(self, index: int, delta: Vector2):
+    def _apply_delta_to_photo(self, index: int, delta: Vector2):
         if index >= len(self.photos) or index < 0:
             return
 
@@ -142,6 +142,28 @@ class AlbumVisualizer(QOpenGLWidget):
         delta.y *= 0.001
         photo.add_uv_offset(delta)
         self._layout_change_listener.image_offset_applied(index, photo.uv_offset)
+
+    def _apply_zoom(self, index: int, delta: float):
+        photo = self.photos[index]
+        photo.zoom(delta)
+        self._layout_change_listener.image_zoom_applied(index, delta)
+
+    def _swap_photos(self, a: int, b: int):
+        photo_a = self.photos[a]
+        rect_a = photo_a.get_rect()
+        size_a = photo_a.get_size()
+        photo_b = self.photos[b]
+        rect_b = photo_b.get_rect()
+        size_b = photo_b.get_size()
+
+        photo_a.set_size(size_b)
+        photo_b.set_size(size_a)
+        photo_a.set_rect(rect_b)
+        photo_b.set_rect(rect_a)
+        self.photos[a] = photo_b
+        self.photos[b] = photo_a
+
+        self._layout_change_listener.image_swap(a, b)
 
     def _raycast_rects(self, mouse_position: QtCore.QPoint) -> RaycastResult:
         screen_point = Vector2(mouse_position.x(), mouse_position.y())
