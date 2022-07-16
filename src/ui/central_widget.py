@@ -18,9 +18,9 @@ class CentralWidget(QWidget):
         self._project_handler = project_handler
         self._project_handler.on_page_change_event += self._on_page_changed
         self._project_handler.on_page_count_changed_event += self._on_page_count_changed
-        self.initUI()
+        self.__init_ui()
 
-    def initUI(self):
+    def __init_ui(self):
         hbox = QHBoxLayout(self)
         splitter = QSplitter(QtCore.Qt.Horizontal)
 
