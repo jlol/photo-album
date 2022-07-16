@@ -1,11 +1,10 @@
 import copy
-from enum import Enum
 
+from enum import Enum
 from OpenGL import GL as gl
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer
 from PyQt5.QtWidgets import QOpenGLWidget
-
 from src.logic.layout_change_listener import LayoutChangeListener
 from src.utils.image_cache import ImageCache
 from src.layout_creation.rect import Rect
@@ -19,6 +18,7 @@ class MouseMode(Enum):
     NONE = 0
     OBJECT = 1
     CAMERA_MOVE = 2
+    SWAP_MODE = 3
 
 
 class AlbumVisualizer(QOpenGLWidget):
@@ -35,6 +35,7 @@ class AlbumVisualizer(QOpenGLWidget):
         self._image_provider = image_provider
         self._mouse_mode = MouseMode.NONE
         self._selected_object_index = -1
+        self._swap_index_a = -1
         self._layout_change_listener = layout_change_listener
 
         timer = QTimer(self)
@@ -97,16 +98,31 @@ class AlbumVisualizer(QOpenGLWidget):
         raycast_result = self._raycast_rects(event.pos())
         self.last_mouse_pos = event.pos()
 
-        if raycast_result.is_ok:
-            self._mouse_mode = MouseMode.OBJECT
-            self._selected_object_index = raycast_result.value
+        if not raycast_result.is_ok:
+            self._mouse_mode = MouseMode.CAMERA_MOVE
             return
 
-        self._mouse_mode = MouseMode.CAMERA_MOVE
+        self._selected_object_index = raycast_result.value
+
+        if event.buttons() == Qt.RightButton:
+            self._mouse_mode = MouseMode.SWAP_MODE
+            self._handle_swap_release_event()
+        elif event.buttons() == Qt.LeftButton:
+            self._mouse_mode = MouseMode.OBJECT
 
     def mouseReleaseEvent(self, event):
         self.is_mouse_down = False
         self._mouse_mode = MouseMode.NONE
+        self._selected_object_index = -1
+
+    def _handle_swap_release_event(self):
+        if self._swap_index_a == -1:
+            self._swap_index_a = self._selected_object_index
+            return
+
+        swap_index_b = self._selected_object_index
+        self._layout_change_listener.image_swap(self._swap_index_a, swap_index_b)
+        self._swap_index_a = -1
 
     def mouseMoveEvent(self, event):
         delta = event.pos() - self.last_mouse_pos

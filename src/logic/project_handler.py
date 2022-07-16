@@ -141,4 +141,4 @@ class ProjectHandler(LayoutChangeListener):
         print("Zoom " + str(index) + " " + str(zoom))
 
     def image_swap(self, image_index_a: int, image_index_b: int):
-        print("Swap" + str(image_index_a) + " " + str(image_index_a))
+        print("Swap" + str(image_index_a) + " " + str(image_index_b))
