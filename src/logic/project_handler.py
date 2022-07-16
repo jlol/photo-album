@@ -1,3 +1,5 @@
+import copy
+
 from src.album_project import album_utils
 from src.album_project.album import Page, Album, Vector2
 from src.layout_creation.layout_image_provider import LayoutImageProvider
@@ -45,11 +47,13 @@ class ProjectHandler:
         self.on_page_change_event(page)
 
     def add_page(self, size: Vector2 = DEFAULT_PAGE_SIZE, border: float = DEFAULT_BORDER, bg_color=(255, 255, 255)):
-        self.__current_page_size = size
+        size_copy = copy.copy(size)
+        bg_color_copy = copy.deepcopy(bg_color)
+        self.__current_page_size = size_copy
         self.__current_page_border = border
-        self.__current_page_bg_color = bg_color
+        self.__current_page_bg_color = bg_color_copy
         self.__current_page_photos.clear()
-        self.__album.add_page(Page(size, border, bg_color))
+        self.__album.add_page(Page(size_copy, border, bg_color_copy))
 
     def images_added(self, filenames: [str]):
         self.__current_page_photos.extend(filenames)
