@@ -17,7 +17,8 @@ class CentralWidget(QWidget):
         super(CentralWidget, self).__init__()
         self._image_provider = image_provider
         self._project_handler = project_handler
-        self._project_handler.on_page_change_event += self.on_page_changed
+        self._project_handler.on_page_change_event += self._on_page_changed
+        self._project_handler.on_page_count_changed_event += self._on_page_count_changed
         self.initUI()
 
     def initUI(self):
@@ -30,9 +31,12 @@ class CentralWidget(QWidget):
         left.setFrameShape(QFrame.StyledPanel)
 
         # Page selector
-        page_selector = QSpinBox(self)
-        page_selector.valueChanged.connect(self.__page_selected)
-        left_vbox.addWidget(page_selector)
+        self.page_selector = QSpinBox(self)
+        self.page_selector.setMaximum(0)
+        self.page_selector.valueChanged.connect(self.__page_selected)
+        left_vbox.addWidget(self.page_selector)
+
+        # Page adding
         add_page_button = QPushButton("Add page")
         left_vbox.addWidget(add_page_button)
         # TODO: instead of just adding the page, show a dialog with page options (filled with project defaults)
@@ -65,11 +69,14 @@ class CentralWidget(QWidget):
         self.setGeometry(0, 0, 1280, 1024)
         self.setWindowTitle('Photo Album')
 
-    def on_page_changed(self, page: Page):
+    def _on_page_changed(self, page: Page):
         assert page, "Page is null"
         self.album_visualizer.cleanup_photos()
         for p in page.photos:
             self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.offset)
+
+    def _on_page_count_changed(self, count: int):
+        self.page_selector.setMaximum(count - 1)
 
     def __page_selected(self, index: int):
         self._project_handler.select_page(index)

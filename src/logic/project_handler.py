@@ -21,9 +21,10 @@ class ProjectHandler:
         self.__current_page_size = Vector2(0, 0)
         self.__current_page_border = 0.0
         self.__current_page_bg_color = (255, 255, 255)
+        self.on_page_change_event = CustomEvent()
+        self.on_page_count_changed_event = CustomEvent()
         self.add_page(DEFAULT_PAGE_SIZE, DEFAULT_BORDER)
         self.__image_cache = image_provider
-        self.on_page_change_event = CustomEvent()
 
     # TODO: keep track of unsaved changes
     def has_changes(self):
@@ -54,6 +55,7 @@ class ProjectHandler:
         self.__current_page_bg_color = bg_color_copy
         self.__current_page_photos.clear()
         self.__album.add_page(Page(size_copy, border, bg_color_copy))
+        self.on_page_count_changed_event(self.__album.number_of_pages())
 
     def images_added(self, filenames: [str]):
         self.__current_page_photos.extend(filenames)
@@ -119,9 +121,10 @@ class ProjectHandler:
         # TODO: need to modify through ui border, page size, etc
         self.__current_page_border = 0.0
         self.__current_page_bg_color = (255, 255, 255)
-        self.add_page(Vector2(3508, 2480), 20.0)
+        # self.add_page(Vector2(3508, 2480), 20.0)
         self.__image_cache.cleanup()
         self.on_page_change_event(current_page)
+        self.on_page_count_changed_event(self.__album.number_of_pages())
 
     def render(self, path: str):
         assert path, "Path shouldn't be empty or null"
