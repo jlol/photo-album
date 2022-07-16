@@ -17,3 +17,4 @@
   - Improve all UI looks
   - Add render options window
 - Unify Event and CustomEvent
+- Add layout presets and option to save current layout to a preset
