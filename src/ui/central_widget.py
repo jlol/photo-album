@@ -72,7 +72,7 @@ class CentralWidget(QWidget):
         assert page, "Page is null"
         self.album_visualizer.cleanup_photos()
         for p in page.photos:
-            self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.offset)
+            self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.normalized_center())
 
     def _on_page_count_changed(self, count: int):
         self.page_selector.setMaximum(count - 1)
@@ -115,4 +115,4 @@ class CentralWidget(QWidget):
         page = self._project_handler.update_layout()
         self.album_visualizer.cleanup_photos()
         for p in page.photos:
-            self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.offset)
+            self.album_visualizer.add_photo(p.path, p.rect_minus_borders, p.normalized_center())

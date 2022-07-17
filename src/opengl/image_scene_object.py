@@ -62,7 +62,8 @@ class ImageSceneObject:
         self.__maximum_uv_size = uv_size
         self.__uv_center = default_uv_center
 
-    def _calculate_uv_corners(self, center: Vector2, uv_size: Vector2) -> (Vector2, Vector2):
+    @staticmethod
+    def _calculate_uv_corners(center: Vector2, uv_size: Vector2) -> (Vector2, Vector2):
         half_uv_size = Vector2.divided_by(uv_size, 2.0)
         return center - half_uv_size, center + half_uv_size
 
@@ -75,9 +76,12 @@ class ImageSceneObject:
     def get_rect(self) -> Rect:
         return Rect.clone(self.__rect)
 
+    def get_zoom(self) -> float:
+        return self.__zoom
+
     '''Returns an offset based on the minimum value for uv center'''
     def get_uv_offset(self) -> Vector2:
-        return self.__uv_center - self._get_half_uv_size_after_zoom()
+        return self.__uv_center.clone()
 
     def reset_uv_offset(self):
         self.__uv_center = Vector2.divided_by(self.__maximum_uv_size, 2.0)

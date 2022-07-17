@@ -3,15 +3,23 @@ from src.utils.MathUtils import Vector2
 
 
 class Photo:
-    def __init__(self, rect: Rect, rect_minus_borders: Rect, path: str, offset=Vector2(0.0, 0.0)):
+    # TODO: make components methods and add set methods to avoid modifying by accident when a copy is expected
+    def __init__(self, rect: Rect, rect_minus_borders: Rect, path: str, normalized_center=Vector2(0.5, 0.5), zoom: float = 1.0):
         self.rect = rect
         self.rect_minus_borders = rect_minus_borders
         self.path = path
-        self.offset = offset
+        # TODO: initialize taking ratio into consideration, it should match default uv_center in opengl
+        self.__normalized_center = normalized_center
+        self.zoom = zoom
 
     def get_size_without_borders(self) -> Vector2:
         return Vector2(self.rect_minus_borders.w, self.rect_minus_borders.h)
 
+    def normalized_center(self) -> Vector2:
+        return self.__normalized_center.clone()
+
+    def set_normalized_center(self, center: Vector2):
+        self.__normalized_center = center.clone()
 
 class Page:
     def __init__(self, size: Vector2, border=0.0, border_color=(255, 255, 255)):

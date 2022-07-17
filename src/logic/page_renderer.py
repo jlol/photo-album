@@ -1,3 +1,5 @@
+import copy
+
 from PIL import Image
 
 from src.album_project.album import Album, Page, Photo
@@ -41,16 +43,25 @@ class PageRenderer:
     @staticmethod
     def _get_size_corrected_image(image: Image, photo: Photo) -> Image:
         original_image_size = Vector2.from_array(image.size)
+        # TODO: Better first crop, then scale, otherwise it will take lots of memory
         scaled_size = ImageUtils.scale_size_respecting_ratio(original_image_size, photo.get_size_without_borders())
+        scaled_size = Vector2.multiply_by(scaled_size, photo.zoom)
         adjusted_image = image.resize((int(scaled_size.x), int(scaled_size.y)), Image.ANTIALIAS)
         return adjusted_image.crop(PageRenderer._get_image_crop_as_pil_box(adjusted_image, photo))
 
     @staticmethod
     def _get_image_crop_as_pil_box(image: Image, photo: Photo) -> (int, int, int, int):
-        offset = photo.offset
+        normalized_photo_center = photo.normalized_center()
+        # Invert Y-axis since PIL uses top-bottom coordinate
+        normalized_photo_center.y = 1.0 - normalized_photo_center.y
+        image_size = Vector2.from_array(image.size)
+        center = Vector2.multiply_components(normalized_photo_center, image_size)
+
         rect_minus_borders = photo.rect_minus_borders
-        left = int(offset.x * image.size[0])
-        right = left + int(rect_minus_borders.w)
-        up = int(offset.y * image.size[1])
-        down = up + int(rect_minus_borders.h)
+        rect_half_size = Vector2.divided_by(rect_minus_borders.get_size(), 2.0)
+
+        left = int(center.x - rect_half_size.x)
+        right = int(left + rect_minus_borders.w)
+        up = int(center.y - rect_half_size.y)
+        down = int(up + rect_minus_borders.h)
         return left, up, right, down

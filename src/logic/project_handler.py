@@ -1,7 +1,7 @@
 import copy
 
 from src.album_project import album_utils
-from src.album_project.album import Page, Album, Vector2
+from src.album_project.album import Page, Album, Vector2, Photo
 from src.layout_creation.layout_image_provider import LayoutImageProvider
 from src.logic.layout_change_listener import LayoutChangeListener
 from src.utils.image_cache import ImageCache
@@ -32,6 +32,7 @@ class ProjectHandler(LayoutChangeListener):
     def has_changes(self):
         return self.__has_changes
 
+    # TODO: preview breaks when changing page (probably on project loading)
     def select_page(self, page_index: int):
         if self.__album.number_of_pages() <= page_index or page_index < 0:
             print("Page doesn't exist")
@@ -134,11 +135,14 @@ class ProjectHandler(LayoutChangeListener):
     def image_offset_applied(self, index: int, offset: Vector2):
         self.__has_changes = True
         current_page = self.__album.get_page(self.__current_page_index)
-        photo = current_page.photos[index]
-        photo.offset = offset
+        photo: Photo = current_page.photos[index]
+        photo.set_normalized_center(offset)
 
     def image_zoom_applied(self, index: int, zoom: float):
-        print("Zoom " + str(index) + " " + str(zoom))
+        self.__has_changes = True
+        current_page = self.__album.get_page(self.__current_page_index)
+        photo = current_page.photos[index]
+        photo.zoom = zoom
 
     def image_swap(self, image_index_a: int, image_index_b: int):
         self.__has_changes = True

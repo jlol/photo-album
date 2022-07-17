@@ -22,3 +22,11 @@ class Vector2:
     @classmethod
     def divided_by(cls, vector, factor: float):
         return cls(vector.x / factor, vector.y / factor)
+
+    @classmethod
+    def multiply_by(cls, vector, multiplier: float):
+        return cls(vector.x * multiplier, vector.y * multiplier)
+
+    @classmethod
+    def multiply_components(cls, vector1, vector2):
+        return cls(vector1.x * vector2.x, vector1.y * vector2.y)

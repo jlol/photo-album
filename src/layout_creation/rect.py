@@ -1,3 +1,6 @@
+from src.utils.MathUtils import Vector2
+
+
 class Point:
     def __init__(self, x: int, y: int):
         self.x = x
@@ -33,6 +36,9 @@ class Rect:
 
     def min(self):
         return Point(self.x, self.y)
+
+    def get_size(self) -> Vector2:
+        return Vector2(float(self.w), float(self.h))
 
     @classmethod
     def clone(cls, other_rect):
