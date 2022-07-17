@@ -12,6 +12,7 @@ class ImageSceneObject:
         self.uv_max: Vector2 = None
         self.__rect: Rect = None
         self.__lock_height_uv = False
+        self.uv_offset: Vector2 = Vector2(0.0, 0.0)
 
         width, height = image.size
         self.__size = image.size
@@ -59,6 +60,9 @@ class ImageSceneObject:
 
     def set_size(self, size: (float, float)):
         self.__size = size
+
+    def reset_offset(self):
+        self.uv_offset = Vector2(0.0, 0.0)
 
     def add_uv_offset(self, delta: Vector2):
         if self.__lock_height_uv:

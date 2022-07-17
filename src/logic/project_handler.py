@@ -141,4 +141,8 @@ class ProjectHandler(LayoutChangeListener):
         print("Zoom " + str(index) + " " + str(zoom))
 
     def image_swap(self, image_index_a: int, image_index_b: int):
-        print("Swap" + str(image_index_a) + " " + str(image_index_b))
+        self.__has_changes = True
+        current_page = self.__album.get_page(self.__current_page_index)
+        path_a = current_page.photos[image_index_a].path
+        current_page.photos[image_index_a].path = current_page.photos[image_index_b].path
+        current_page.photos[image_index_b].path = path_a

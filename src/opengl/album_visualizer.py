@@ -161,11 +161,15 @@ class AlbumVisualizer(QOpenGLWidget):
         photo_a.set_size(size_b)
         photo_b.set_size(size_a)
         photo_a.set_rect(rect_b)
+        photo_a.reset_offset()
         photo_b.set_rect(rect_a)
+        photo_b.reset_offset()
         self.photos[a] = photo_b
         self.photos[b] = photo_a
 
         self._layout_change_listener.image_swap(a, b)
+        self._layout_change_listener.image_offset_applied(a, Vector2(0.0, 0.0))
+        self._layout_change_listener.image_offset_applied(b, Vector2(0.0, 0.0))
 
     def _raycast_rects(self, mouse_position: QtCore.QPoint) -> RaycastResult:
         screen_point = Vector2(mouse_position.x(), mouse_position.y())
