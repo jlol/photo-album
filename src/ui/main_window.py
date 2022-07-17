@@ -51,10 +51,9 @@ class MainWindow(QMainWindow):
 
     def __show_load_window(self):
         if self._project_handler.has_changes():
-            # TODO: allow discarding changes
-            msg = UiUtils.get_warning_window("Current project has changes, please save it. This message should allow to continue with discard changes option")
-            msg.exec()
-            return
+            accept = UiUtils.show_modal_window(self, "Current project has changes, are you sure you want to continue?")
+            if not accept:
+                return
 
         name = QFileDialog.getOpenFileName(self, 'Open Project', DEFAULT_DIRECTORY, "(*.pa)")
         if not name or not name[0]:

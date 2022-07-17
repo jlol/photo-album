@@ -145,7 +145,9 @@ class AlbumVisualizer(QOpenGLWidget):
 
     def _apply_zoom(self, index: int, delta: float):
         photo = self.photos[index]
-        photo.zoom(delta)
+        delta *= 0.0005
+        photo.change_zoom(delta)
+        # TODO: send an image_rect_update instead of image_zoom_applied
         self._layout_change_listener.image_zoom_applied(index, delta)
 
     def _swap_photos(self, a: int, b: int):

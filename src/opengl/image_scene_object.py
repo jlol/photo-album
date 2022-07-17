@@ -7,11 +7,15 @@ from src.utils.MathUtils import Vector2
 
 class ImageSceneObject:
     def __init__(self, image: Image, rect: Rect, offset: Vector2):
-        self._rect = None
-        self._lock_height_uv = None
+        self.__max_uv_size: Vector2 = None
+        self.uv_min: Vector2 = None
+        self.uv_max: Vector2 = None
+        self.__rect: Rect = None
+        self.__lock_height_uv = False
 
         width, height = image.size
-        self._size = image.size
+        self.__size = image.size
+        self.__zoom = 1.0
 
         # Dirty hack for portrait textures, they seem to work with
         # POT width, otherwise texture looks bad
@@ -19,7 +23,7 @@ class ImageSceneObject:
             new_height = height * (2048.0 / width)
             image = image.resize((2048, int(new_height)))
             width, height = image.size
-            self._size = image.size
+            self.__size = image.size
 
         self.img_data = image.tobytes("raw", "RGB", 0, -1)
 
@@ -30,33 +34,34 @@ class ImageSceneObject:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, self.img_data)
-        self._texture = texture
+        self.__texture = texture
 
         self._initialize_uv(offset)
         self.set_rect(rect)
 
     def set_rect(self, rect: Rect):
-        self._rect = rect
-        width_ratio = self._size[0] / rect.w
-        height_ratio = self._size[1] / rect.h
+        self.__rect = rect
+        width_ratio = self.__size[0] / rect.w
+        height_ratio = self.__size[1] / rect.h
         if width_ratio > height_ratio:
-            self._lock_height_uv = True
+            self.__lock_height_uv = True
             self.uv_max.x = height_ratio / width_ratio
         else:
-            self._lock_height_uv = False
+            self.__lock_height_uv = False
             self.uv_max.y = width_ratio / height_ratio
+        self.__max_uv_size = self.uv_max - self.uv_min
 
     def get_rect(self) -> Rect:
-        return self._rect
+        return self.__rect
 
     def get_size(self) -> (float, float):
-        return self._size
+        return self.__size
 
     def set_size(self, size: (float, float)):
-        self._size = size
+        self.__size = size
 
     def add_uv_offset(self, delta: Vector2):
-        if self._lock_height_uv:
+        if self.__lock_height_uv:
             self.uv_offset.x -= delta.x
         else:
             self.uv_offset.y += delta.y
@@ -78,15 +83,38 @@ class ImageSceneObject:
             diff = resulting_uv_min.y
             self.uv_offset.y -= diff
 
-    def zoom(self, zoom: float):
-        pass
+    # TODO: review the correctness of this method
+    # TODO: unlock vertical/horizontal movement of uv when zoomed in
+    def change_zoom(self, delta: float):
+        self.__zoom = min(max(self.__zoom + delta, 1.0), 7.0)
+
+        self.uv_min = Vector2(0.0, 0.0)
+        self.uv_offset = Vector2(0.0, 0.0)
+        max_x = self.__max_uv_size.x / self.__zoom
+        max_y = self.__max_uv_size.y / self.__zoom
+
+        if max_x > 1.0:
+            diff = max_x - 1.0
+            relative_correction = diff / self.__max_uv_size.x
+            self.__zoom -= delta * relative_correction
+            max_x = 1.0
+            max_y -= diff
+
+        if max_y > 1.0:
+            diff = 1.0 - max_y
+            relative_correction = diff / self.__max_uv_size.y
+            self.__zoom -= delta * relative_correction
+            max_y = 1.0
+            max_x -= diff
+
+        self.uv_max = Vector2(max_x, max_y)
 
     def draw(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         glEnable(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, self._texture)
+        glBindTexture(GL_TEXTURE_2D, self.__texture)
 
-        corners = self._rect.get_corners()
+        corners = self.__rect.get_corners()
 
         uv_min = Vector2(self.uv_min.x, self.uv_min.y)
         uv_max = Vector2(self.uv_max.x, self.uv_max.y)
@@ -107,7 +135,7 @@ class ImageSceneObject:
         glDisable(GL_TEXTURE_2D)
 
     def dispose(self):
-        glDeleteTextures(1, self._texture)
+        glDeleteTextures(1, self.__texture)
 
     def _initialize_uv(self, offset):
         # Initialize UV

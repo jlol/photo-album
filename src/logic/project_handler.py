@@ -17,7 +17,6 @@ DEFAULT_BORDER = 20.0
 class ProjectHandler(LayoutChangeListener):
 
     def __init__(self, image_provider: ImageCache):
-        self.__has_changes = False
         self.__current_page_index = 0
         self.__album = Album()
         self.__current_page_photos: [str] = []
@@ -28,6 +27,7 @@ class ProjectHandler(LayoutChangeListener):
         self.on_page_count_changed_event = CustomEvent()
         self.add_page()
         self.__image_cache = image_provider
+        self.__has_changes = False
 
     def has_changes(self):
         return self.__has_changes

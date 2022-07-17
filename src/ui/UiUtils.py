@@ -12,3 +12,9 @@ def get_warning_window(message: str) -> QMessageBox:
     msg.setText(message)
     msg.setWindowTitle("Warning")
     return msg
+
+
+def show_modal_window(parent, message: str) -> bool:
+    result = QMessageBox.question(parent, '', message, QMessageBox.Yes | QMessageBox.No)
+    return result == QMessageBox.Yes
+
