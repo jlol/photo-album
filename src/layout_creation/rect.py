@@ -6,6 +6,7 @@ class Point:
 
 class Rect:
 
+    # TODO: should the rect handle floats and cast to int when needed (probably more handy and cleaner)
     def __init__(self, x: int, y: int, w: int, h: int):
         self.x = x
         self.y = y

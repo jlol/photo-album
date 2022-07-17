@@ -12,6 +12,13 @@ class Vector2:
     def __str__(self):
         return str(self.x) + " " + str(self.y)
 
+    def clone(self):
+        return Vector2(self.x, self.y)
+
     @classmethod
     def from_array(cls, source_array: [float]):
         return cls(source_array[0], source_array[1])
+
+    @classmethod
+    def divided_by(cls, vector, factor: float):
+        return cls(vector.x / factor, vector.y / factor)

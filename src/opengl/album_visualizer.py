@@ -138,10 +138,11 @@ class AlbumVisualizer(QOpenGLWidget):
             return
 
         photo = self.photos[index]
-        delta.x *= 0.001
+        delta.x *= -0.001
         delta.y *= 0.001
         photo.add_uv_offset(delta)
-        self._layout_change_listener.image_offset_applied(index, photo.uv_offset)
+        # TODO: send an image_rect_update instead of image_zoom_applied
+        self._layout_change_listener.image_offset_applied(index, photo.get_uv_offset())
 
     def _apply_zoom(self, index: int, delta: float):
         photo = self.photos[index]
@@ -153,17 +154,13 @@ class AlbumVisualizer(QOpenGLWidget):
     def _swap_photos(self, a: int, b: int):
         photo_a = self.photos[a]
         rect_a = photo_a.get_rect()
-        size_a = photo_a.get_size()
         photo_b = self.photos[b]
         rect_b = photo_b.get_rect()
-        size_b = photo_b.get_size()
 
-        photo_a.set_size(size_b)
-        photo_b.set_size(size_a)
         photo_a.set_rect(rect_b)
-        photo_a.reset_offset()
+        photo_a.reset_uv_offset()
         photo_b.set_rect(rect_a)
-        photo_b.reset_offset()
+        photo_b.reset_uv_offset()
         self.photos[a] = photo_b
         self.photos[b] = photo_a
 
