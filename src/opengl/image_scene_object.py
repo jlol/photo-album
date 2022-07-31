@@ -6,15 +6,15 @@ from src.utils.MathUtils import Vector2
 
 
 class ImageSceneObject:
-    def __init__(self, image: Image, rect: Rect, offset: Vector2):
+    def __init__(self, image: Image, rect: Rect, uv_center: Vector2, zoom: int):
         width, height = image.size
         self.__size = image.size
-        self.__zoom = 1.0
+        self.__zoom = zoom
         self.__rect: Rect = rect
         self.__ratio: float = float(self.__rect.w) / float(self.__rect.h)
 
         # Set default values for UV
-        self.__uv_center = Vector2(0.5, 0.5) + offset
+        self.__uv_center = uv_center
         self.__maximum_uv_size = Vector2(1.0, 1.0)
         self.__uv_bottom_left = Vector2(0, 0)
         self.__uv_top_right = Vector2(1.0, 1.0)
@@ -39,9 +39,9 @@ class ImageSceneObject:
         self.__texture = texture
 
         self.set_rect(rect)
+        self.refresh_zoom()
 
     def set_rect(self, rect: Rect):
-        self.__zoom = 1.0
         self.__rect = rect
         self._adjust_uv_size_to_ratio(rect)
         self.__uv_bottom_left, self.__uv_top_right = self._calculate_uv_corners(self.__uv_center, self.__maximum_uv_size)
@@ -50,14 +50,15 @@ class ImageSceneObject:
         width_ratio = self.__size[0] / float(rect.w)
         height_ratio = self.__size[1] / float(rect.h)
         uv_size = Vector2(1.0, 1.0)
-        default_uv_center = Vector2(0.5, 0.5)
+        default_uv_center = self.__uv_center
 
+        # TODO: this should probably be done when creating Photo and then applied when image_scene_object is created
         if width_ratio > height_ratio:
             uv_size.x = height_ratio / width_ratio
-            default_uv_center.x = uv_size.x / 2.0
+            #default_uv_center.x = uv_size.x / 2.0
         else:
             uv_size.y = width_ratio / height_ratio
-            default_uv_center.y = uv_size.y / 2.0
+            #default_uv_center.y = uv_size.y / 2.0
 
         self.__maximum_uv_size = uv_size
         self.__uv_center = default_uv_center
@@ -80,7 +81,7 @@ class ImageSceneObject:
         return self.__zoom
 
     '''Returns an offset based on the minimum value for uv center'''
-    def get_uv_offset(self) -> Vector2:
+    def get_normalized_center(self) -> Vector2:
         return self.__uv_center.clone()
 
     def reset_uv_offset(self):
@@ -106,20 +107,20 @@ class ImageSceneObject:
 
     def change_zoom(self, delta: float):
         self.__zoom = min(max(self.__zoom + delta, 1.0), 7.0)
+        self.refresh_zoom()
+
+    def refresh_zoom(self):
         new_uv_size = self._get_uv_size_after_zoom(self.__zoom)
         new_center = self.__uv_center
         bottom_left, top_right = self._calculate_uv_corners(self.__uv_center, new_uv_size)
-
         if top_right.x > 1.0:
             new_center.x -= top_right.x - 1.0
         elif bottom_left.x < 0.0:
             new_center.x += -bottom_left.x
-
         if top_right.y > 1.0:
             new_center.y -= top_right.y - 1.0
         elif bottom_left.y < 0.0:
             new_center.y += -bottom_left.y
-
         self.__uv_center = new_center
         self.__uv_bottom_left, self.__uv_top_right = self._calculate_uv_corners(new_center, new_uv_size)
 

@@ -1,9 +1,8 @@
+- uv_center in ImageSceneObject should be assigned, calculated in logic and updated also in album.Photo
 - Remove page button 
 - Make ImageCache use reduced size images and set a memory limit
 - Cleanup, use injection framework
 - Add page options (size, borders, ..)
-- Add image cropping (by scrolling over a photo in the page)
-- Add image swap (right click two photos to swap)
 - Add borders dragging, to modify layout
 - Add "Save as" option in menu
 - Show warning when loading or closing without saving

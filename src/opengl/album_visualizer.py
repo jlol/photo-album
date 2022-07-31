@@ -48,10 +48,10 @@ class AlbumVisualizer(QOpenGLWidget):
     def resizeGL(self, w, h):
         self.camera.resizeGL(QSize(w, h))
 
-    def add_photo(self, path: str, rect: Rect, offset: Vector2):
+    def add_photo(self, path: str, rect: Rect, offset: Vector2, zoom: int):
         self.makeCurrent()
         image = self._image_provider.get_image(path)
-        photo = ImageSceneObject(image, rect, copy.copy(offset))
+        photo = ImageSceneObject(image, rect, copy.copy(offset), zoom)
         self.rects.append(rect)
         self.photos.append(photo)
 
@@ -137,22 +137,23 @@ class AlbumVisualizer(QOpenGLWidget):
         if index >= len(self.photos) or index < 0:
             return
 
-        photo = self.photos[index]
+        photo: ImageSceneObject = self.photos[index]
         delta.x *= -0.001
         delta.y *= 0.001
         photo.add_uv_offset(delta)
-        self._layout_change_listener.image_offset_applied(index, photo.get_uv_offset())
+        self._layout_change_listener.image_normalized_center_changed(index, photo.get_normalized_center())
 
     def _apply_zoom(self, index: int, delta: float):
         photo = self.photos[index]
         delta *= 0.0005
         photo.change_zoom(delta)
         self._layout_change_listener.image_zoom_applied(index, photo.get_zoom())
+        self._layout_change_listener.image_normalized_center_changed(index, photo.get_normalized_center())
 
     def _swap_photos(self, a: int, b: int):
-        photo_a = self.photos[a]
+        photo_a: ImageSceneObject = self.photos[a]
         rect_a = photo_a.get_rect()
-        photo_b = self.photos[b]
+        photo_b: ImageSceneObject = self.photos[b]
         rect_b = photo_b.get_rect()
 
         photo_a.set_rect(rect_b)
@@ -161,10 +162,12 @@ class AlbumVisualizer(QOpenGLWidget):
         photo_b.reset_uv_offset()
         self.photos[a] = photo_b
         self.photos[b] = photo_a
+        self.photos[a].refresh_zoom()
+        self.photos[b].refresh_zoom()
 
         self._layout_change_listener.image_swap(a, b)
-        self._layout_change_listener.image_offset_applied(a, Vector2(0.0, 0.0))
-        self._layout_change_listener.image_offset_applied(b, Vector2(0.0, 0.0))
+        self._layout_change_listener.image_normalized_center_changed(a, photo_a.get_normalized_center())
+        self._layout_change_listener.image_normalized_center_changed(b, photo_b.get_normalized_center())
 
     def _raycast_rects(self, mouse_position: QtCore.QPoint) -> RaycastResult:
         screen_point = Vector2(mouse_position.x(), mouse_position.y())

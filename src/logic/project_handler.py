@@ -132,11 +132,11 @@ class ProjectHandler(LayoutChangeListener):
         renderer = PageRenderer(self.__image_cache)
         renderer.render_album(self.__album, path)
 
-    def image_offset_applied(self, index: int, offset: Vector2):
+    def image_normalized_center_changed(self, index: int, normalized_center: Vector2):
         self.__has_changes = True
         current_page = self.__album.get_page(self.__current_page_index)
         photo: Photo = current_page.photos[index]
-        photo.set_normalized_center(offset)
+        photo.set_normalized_center(normalized_center)
 
     def image_zoom_applied(self, index: int, zoom: float):
         self.__has_changes = True

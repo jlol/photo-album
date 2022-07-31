@@ -8,7 +8,7 @@ class LayoutChangeListener(ABC):
         super().__init__()
 
     @abstractmethod
-    def image_offset_applied(self, index: int, uv_offset: Vector2):
+    def image_normalized_center_changed(self, index: int, normalized_center: Vector2):
         pass
 
     @abstractmethod

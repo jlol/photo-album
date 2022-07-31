@@ -4,11 +4,13 @@ from src.utils.MathUtils import Vector2
 
 class Photo:
     # TODO: make components methods and add set methods to avoid modifying by accident when a copy is expected
-    def __init__(self, rect: Rect, rect_minus_borders: Rect, path: str, normalized_center=Vector2(0.5, 0.5), zoom: float = 1.0):
+    def __init__(self, rect: Rect, rect_minus_borders: Rect, path: str, normalized_center=Vector2(0.5, 0.5),
+                 zoom: float = 1.0):
         self.rect = rect
         self.rect_minus_borders = rect_minus_borders
         self.path = path
         # TODO: initialize taking ratio into consideration, it should match default uv_center in opengl
+        # TODO: it should probaby be present in some external file to share knowledge
         self.__normalized_center = normalized_center
         self.zoom = zoom
 
